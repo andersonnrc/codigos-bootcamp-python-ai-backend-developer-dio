@@ -1,3 +1,5 @@
+import datetime
+
 menu = """
 
 [d] Depositar
@@ -22,7 +24,9 @@ while True:
 
         if valor > 0:
             saldo += valor
-            extrato += f'DEPÓSITO: R$ {valor:.2f}\n'
+            data_corrente = datetime.datetime.now()
+            data_operacao = data_corrente.strftime('%d/%m/%Y %H:%M:%S')
+            extrato += f'DEPÓSITO: R$ {valor:.2f} - {data_operacao}\n'
         else:
             print('\nFALHA NA OPERAÇÃO! VALOR INVÁLIDO!')
 
@@ -44,7 +48,9 @@ while True:
 
         elif valor > 0:
             saldo -= valor
-            extrato += f"SAQUE: R$ {valor:.2f}\n"
+            data_corrente = datetime.datetime.now()
+            data_operacao = data_corrente.strftime('%d/%m/%Y %H:%M:%S')
+            extrato += f"SAQUE: R$ {valor:.2f} - {data_operacao}\n"
             numero_saques += 1
 
     elif opcao == "e":
