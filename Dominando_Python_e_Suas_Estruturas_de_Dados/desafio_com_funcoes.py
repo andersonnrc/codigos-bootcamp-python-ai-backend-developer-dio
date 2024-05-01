@@ -26,11 +26,9 @@ def depositar(saldo, valor, extrato, /):
 
 def sacar(*, saldo, valor, extrato, limite, numero_saques, limite_saques):
 
-    LIMITE_SAQUES = 3
-
     excede_saldo = valor > saldo
     excede_limite = valor > limite
-    excede_saques = numero_saques >= LIMITE_SAQUES
+    excede_saques = numero_saques >= limite_saques
 
     if excede_saldo:
         print('\nFALHA NA OPERAÇÃO. SALDO INSUFICIENTE!')
@@ -69,7 +67,7 @@ def criar_usuario(usuarios):
         return
 
     nome = input("INFORME O NOME: ")
-    data_nascimento = input("INFORME A DATA DE NASCIMENTO (dd-mm-aaaa): ")
+    data_nascimento = input("INFORME A DATA DE NASCIMENTO (dd/mm/aaaa): ")
     endereco = input("INFORME O ENDEREÇO COMPLETO: ")
 
     usuarios.append({"nome": nome, "data_nascimento": data_nascimento, "cpf": cpf, "endereco": endereco})
