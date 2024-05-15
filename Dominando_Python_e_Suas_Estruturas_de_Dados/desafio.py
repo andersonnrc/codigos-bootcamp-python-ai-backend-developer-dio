@@ -20,25 +20,25 @@ while True:
     opcao = input(menu)
 
     if opcao == "d":
-        valor = float(input('\nDIGITE O VALOR PARA DEPÓSITO: '))
+        valor = float(input("\nDIGITE O VALOR PARA DEPÓSITO: "))
 
         if valor > 0:
             saldo += valor
             data_corrente = datetime.datetime.now()
-            data_operacao = data_corrente.strftime('%d/%m/%Y %H:%M:%S')
-            extrato += f'DEPÓSITO: R$ {valor:.2f} - {data_operacao}\n'
+            data_operacao = data_corrente.strftime("%d/%m/%Y %H:%M:%S")
+            extrato += f"DEPÓSITO: R$ {valor:.2f} - {data_operacao}\n"
         else:
-            print('\nFALHA NA OPERAÇÃO! VALOR INVÁLIDO!')
+            print("\nFALHA NA OPERAÇÃO! VALOR INVÁLIDO!")
 
     elif opcao == "s":
-        valor = float(input('\nDIGITE O VALOR PARA SAQUE: '))
+        valor = float(input("\nDIGITE O VALOR PARA SAQUE: "))
 
         excede_saldo = valor > saldo
         excede_limite = valor > limite
         excede_saques = numero_saques >= LIMITE_SAQUES
 
         if excede_saldo:
-            print('\nFALHA NA OPERAÇÃO. SALDO INSUFICIENTE!')
+            print("\nFALHA NA OPERAÇÃO. SALDO INSUFICIENTE!")
 
         elif excede_limite:
             print("\nFALHA NA OPERAÇÃO. VALOR DO SAQUE EXCEDE LIMITE!")
@@ -49,7 +49,7 @@ while True:
         elif valor > 0:
             saldo -= valor
             data_corrente = datetime.datetime.now()
-            data_operacao = data_corrente.strftime('%d/%m/%Y %H:%M:%S')
+            data_operacao = data_corrente.strftime("%d/%m/%Y %H:%M:%S")
             extrato += f"SAQUE: R$ {valor:.2f} - {data_operacao}\n"
             numero_saques += 1
 

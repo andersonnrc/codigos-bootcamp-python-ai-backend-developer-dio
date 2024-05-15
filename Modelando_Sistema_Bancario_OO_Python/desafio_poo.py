@@ -1,16 +1,12 @@
-from abc import ABC, abstractclassmethod, abstractproperty
-from datetime import datetime
-
 class Cliente:
     def __init__(self, endereco):
         self.endereco = endereco
         self.contas = []
 
-    def realizar_transacao(self, conta, transacao):
-        transacao.registrar(conta)
-
-    def adicionar_conta(self, conta):
+    def cadastrar_conta(self, numero):
+        conta = Conta(self, numero)
         self.contas.append(conta)
+
 
 class PessoaFisica(Cliente):
     def __init__(self, cpf, nome, data_nascimento, endereco):
@@ -19,13 +15,14 @@ class PessoaFisica(Cliente):
         self.nome = nome
         self.data_nascimento = data_nascimento
 
+
 class Conta:
     def __init__(self, numero, cliente):
         self._saldo = 0
         self._numero = numero
         self._cliente = cliente
-        self._agencia = '0001'
-        self._historico = Historico()
+        self._agencia = "0001"
+        self._historico = []
 
     @classmethod
     def nova_conta(cls, cliente, numero):
@@ -34,130 +31,89 @@ class Conta:
     @property
     def saldo(self):
         return self._saldo
-    
+
     @property
     def numero(self):
         return self._numero
-    
+
     @property
     def cliente(self):
         return self.cliente
-    
+
     @property
     def agencia(self):
         return self.agencia
-    
-    @property
-    def historico(self):
-        return self.historico
-    
-    def sacar(self, valor):
-        excede_saldo = valor > self._saldo
-
-        if excede_saldo:
-            print('\nFALHA NA OPERAÇÃO. SALDO INSUFICIENTE!')
-
-        elif valor > 0:
-            self._saldo -= valor
-            print('\nSAQUE REALIZADO COM SUCESSO!')
-            return True
-        
-        else:
-            print('\nFALHA NA OPERAÇÃO. VALOR INVÁLIDO!')
-        return False
 
     def depositar(self, valor):
+
         if valor > 0:
             self._saldo += valor
+            self._historico.append(f"DEPÓSITO: R${valor}")
+            print("\nSAQUE REALIZADO COM SUCESSO!")
             return True
         else:
-            print('\nFALHA NA OPERAÇÃO! VALOR INVÁLIDO!')
+            print("\nFALHA NA OPERAÇÃO! VALOR INVÁLIDO!")
             return False
-        
-class ContaCorrente(Conta):
-    def __init__(self, numero, cliente, limite=500, limite_saques=3):
-        super().__init__(numero, cliente)
-        self.limite = limite
-        self.limite_saques = limite_saques
 
     def sacar(self, valor):
-        numero_saques = 0
-        for transacao in self.historico.transacoes:
-            if transacao["tipo"] == Saque.__name__:
-                numero_saques += 1
 
-        excedeu_limite = valor > self.limite
-        excedeu_saques = numero_saques >= self.limite_saques
+        if valor >= self._saldo:
+            print("\nSAQUE REALIZADO COM SUCESSO!")
+            return True
 
-        if excedeu_limite:
-            print("\nFALHA NA OPERAÇÃO. VALOR DO SAQUE, EXCEDE LIMITE!")
-        elif excedeu_saques:
-            print("\nFALHA NA OPERAÇÃO. NÚMERO MÁXIMO DE SAQUES EXCEDIDOS!")
+        elif self._saldo <= 0:
+            print("\nFALHA NA OPERAÇÃO. SALDO INSUFICIENTE!")
+
         else:
-            return super().sacar(valor)
-
+            print("\nFALHA NA OPERAÇÃO. VALOR INVÁLIDO!")
         return False
 
-    def __str__(self):
-        return f"""\
-            Agência:\t{self.agencia}
-            C/C:\t\t{self.numero}
-            Titular:\t{self.cliente.nome}
-        """
+    def listar_historico(self):
+        print("\nHISTÓRICO DE OPERAÇÕES:")
+        for operacao in self._historico:
+            print(operacao)
 
-    
-class Historico:
-    def __init__(self):
-        self._transacoes = []
 
-    @property
-    def transacoes(self):
-        return self._transacoes
+def menu():
+    menu = """\n
+    ================ MENU ================
+    [d]\tDepositar
+    [s]\tSacar
+    [e]\tExtrato
+    [nc]\tNova conta
+    [lc]\tListar contas
+    [nu]\tNovo usuário
+    [q]\tSair
+    => """
 
-    def adicionar_transacao(self, transacao):
-        self._transacoes.append(
-            {
-                "tipo": transacao.__class__.__name__,
-                "valor": transacao.valor,
-                "data": datetime.now().strftime("%d-%m-%Y %H:%M:%s"),
-            }
-        )
 
-class Transacao(ABC):
-    @property
-    @abstractproperty
-    def valor(self):
-        pass
+def main():
+    pass
 
-    @abstractclassmethod
-    def registrar(self, conta):
-        pass
 
-class Saque(Transacao):
-    def __init__(self, valor):
-        self._valor = valor
+def filtrar_cliente(cpf, clientes):
+    clientes_filtrados = [cliente for cliente in clientes if cliente.cpf == cpf]
+    return clientes_filtrados[0] if clientes_filtrados else None
 
-    @property
-    def valor(self):
-        return self._valor
 
-    def registrar(self, conta):
-        sucesso_transacao = conta.sacar(self.valor)
+def criar_cliente(clientes):
+    cpf = input("Informe o CPF (somente número): ")
+    nome = input("Informe o nome completo: ")
+    data_nascimento = input("Informe a data de nascimento (dd-mm-aaaa): ")
+    endereco = input("Informe o endereço (logradouro, nro - bairro - cidade/sigla estado): ")
 
-        if sucesso_transacao:
-            conta.historico.adicionar_transacao(self)
+    cliente = PessoaFisica(nome, data_nascimento, cpf, endereco)
+    clientes.append(cliente)
+    print("\n=== Cliente criado com sucesso! ===")
 
-class Deposito(Transacao):
-    def __init__(self, valor):
-        self._valor = valor
 
-    @property
-    def valor(self):
-        return self._valor
+def criar_conta(numero_conta, clientes, contas):
+    cpf = input("Informe o CPF do cliente: ")
+    cliente = filtrar_cliente(cpf, clientes)
+    conta = Conta.nova_conta(cliente, numero_conta)
+    contas.append(conta)
+    cliente.contas.append(conta)
+    print("\n=== Conta criada com sucesso! ===")
 
-    def registrar(self, conta):
-        sucesso_transacao = conta.depositar(self.valor)
 
-        if sucesso_transacao:
-            conta.historico.adicionar_transacao(self)
-
+main()

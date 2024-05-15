@@ -1,5 +1,6 @@
 import datetime
 
+
 def menu():
     menu = """\n
     ================ MENU ================
@@ -13,16 +14,18 @@ def menu():
     => """
     return input(menu)
 
+
 def depositar(saldo, valor, extrato, /):
     if valor > 0:
-            saldo += valor
-            data_corrente = datetime.datetime.now()
-            data_operacao = data_corrente.strftime('%d/%m/%Y %H:%M:%S')
-            extrato += f'DEPÓSITO: R$ {valor:.2f} - {data_operacao}\n'
+        saldo += valor
+        data_corrente = datetime.datetime.now()
+        data_operacao = data_corrente.strftime("%d/%m/%Y %H:%M:%S")
+        extrato += f"DEPÓSITO: R$ {valor:.2f} - {data_operacao}\n"
     else:
-        print('\nFALHA NA OPERAÇÃO! VALOR INVÁLIDO!')
+        print("\nFALHA NA OPERAÇÃO! VALOR INVÁLIDO!")
 
     return saldo, extrato
+
 
 def sacar(*, saldo, valor, extrato, limite, numero_saques, limite_saques):
 
@@ -31,7 +34,7 @@ def sacar(*, saldo, valor, extrato, limite, numero_saques, limite_saques):
     excede_saques = numero_saques >= limite_saques
 
     if excede_saldo:
-        print('\nFALHA NA OPERAÇÃO. SALDO INSUFICIENTE!')
+        print("\nFALHA NA OPERAÇÃO. SALDO INSUFICIENTE!")
 
     elif excede_limite:
         print("\nFALHA NA OPERAÇÃO. VALOR DO SAQUE EXCEDE LIMITE!")
@@ -42,11 +45,12 @@ def sacar(*, saldo, valor, extrato, limite, numero_saques, limite_saques):
     elif valor > 0:
         saldo -= valor
         data_corrente = datetime.datetime.now()
-        data_operacao = data_corrente.strftime('%d/%m/%Y %H:%M:%S')
+        data_operacao = data_corrente.strftime("%d/%m/%Y %H:%M:%S")
         extrato += f"SAQUE: R$ {valor:.2f} - {data_operacao}\n"
         numero_saques += 1
 
     return saldo, extrato
+
 
 def exibir_extrato(saldo, /, *, extrato):
     print("\n================ EXTRATO ================")
@@ -54,9 +58,11 @@ def exibir_extrato(saldo, /, *, extrato):
     print(f"\nSALDO: R$ {saldo:.2f}")
     print("==========================================")
 
+
 def filtrar_usuario(cpf, usuarios):
     usuarios_filtrados = [usuario for usuario in usuarios if usuario["cpf"] == cpf]
     return usuarios_filtrados[0] if usuarios_filtrados else None
+
 
 def criar_usuario(usuarios):
     cpf = input("INFORME O CPF (APENAS DÍGITOS): ")
@@ -74,6 +80,7 @@ def criar_usuario(usuarios):
 
     print("++++++++++ USUÁRIO CRIADO COM SUCESSO! ++++++++++")
 
+
 def criar_conta(agencia, numero_conta, usuarios):
     cpf = input("INFORME O CPF DO USUÁRIO: ")
     usuario = filtrar_usuario(cpf, usuarios)
@@ -84,6 +91,7 @@ def criar_conta(agencia, numero_conta, usuarios):
 
     print("\n++++++++++ FALHA NA OPERAÇÃO. USUÁRIO NÃO ENCONTRADO! ++++++++++")
 
+
 def listar_contas(contas):
     for conta in contas:
         linha = f"""\
@@ -93,6 +101,7 @@ def listar_contas(contas):
         """
         print("=" * 100)
         print(linha)
+
 
 def main():
     LIMITE_SAQUES = 3
@@ -109,12 +118,12 @@ def main():
         opcao = menu()
 
         if opcao == "d":
-            valor = float(input('\nDIGITE O VALOR PARA DEPÓSITO: '))
+            valor = float(input("\nDIGITE O VALOR PARA DEPÓSITO: "))
 
             saldo, extrato = depositar(saldo, valor, extrato)
 
         elif opcao == "s":
-            valor = float(input('\nDIGITE O VALOR PARA SAQUE: '))
+            valor = float(input("\nDIGITE O VALOR PARA SAQUE: "))
 
             saldo, extrato = sacar(
                 saldo=saldo,
